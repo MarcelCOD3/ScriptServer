@@ -1,0 +1,38 @@
+kill service 
+
+Manera para cerrar servicios que se detengan en el momento por si hay conexiones activas, utilizanod kill para matar el proceso para eso debiera listar los servicios activos en el sistema obtener su PID para luego utilizar kill -9 $servicio
+
+1 Listar todos los servicios activos
+
+systemctl list-units --type=service --state=running
+
+Salida ejemplo:
+
+ssh.service       loaded active running OpenSSH server
+httpd.service     loaded active running Apache Web Server
+firewalld.service loaded active running firewalld
+...
+
+2 Ver el PID de un servicio específico
+systemctl show -p MainPID sshd
+
+Salida ejemplo:
+
+MainPID=1234
+ps -ef | grep sshd
+
+3 Listar todos los PIDs de todos los servicios
+
+for svc in $(systemctl list-units --type=service --state=running --no-legend | awk '{print $1}'); do
+    pid=$(systemctl show -p MainPID $svc | cut -d= -f2)
+    echo "$svc -> PID $pid"
+done
+
+Salida ejemplo:
+
+ssh.service -> PID 1234
+httpd.service -> PID 2345
+firewalld.service -> PID 3456
+...
+
+luego la opcion de denegar servicio sin utilizar kill. 
