@@ -36,3 +36,22 @@ firewalld.service -> PID 3456
 ...
 
 luego la opcion de denegar servicio sin utilizar kill. 
+
+
+function configurar_ip(){
+    read -p "Ingrese el nombre de la interfaz (ej: eth0, enp0s3): " iface
+    read -p "Ingrese la nueva IP (ej: 192.168.1.100/24): " ipaddr
+    
+    # Eliminar todas las IPs actuales de la interfaz
+    sudo ip addr flush dev $iface
+    
+    # Asignar la nueva IP
+    sudo ip addr add $ipaddr dev $iface
+    echo "IP principal cambiada a $ipaddr en $iface"
+    
+    # Opcional: reiniciar la interfaz para asegurar conectividad
+    sudo ip link set dev $iface down
+    sudo ip link set dev $iface up
+    
+    read -p "Presione Enter para continuar..."
+}
